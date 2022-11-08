@@ -1,0 +1,55 @@
+.task,
+.taskDone {
+  display: flex;
+  align-items: flex-start;
+  border: 1px solid var(--gray-400);
+  border-radius: 8px;
+  background: var(--gray-500);
+  padding: 1rem;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--gray-100);
+}
+.task .unChecked {
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.taskDone .checked {
+  color: var(--purple-dark);
+  transition: 0.2s;
+}
+.taskDone .checked:hover {
+  color: var(--purple);
+}
+
+.taskDone p {
+  text-decoration: line-through;
+  color: var(--gray-300);
+}
+
+.trashButton {
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  transition: 0.2s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+.trashButton:hover {
+  background: var(--gray-400);
+  color: var(--danger);
+}
+.trashButton:hover svg {
+  color: var(--danger);
+}
+
+.trashButton svg {
+  color: var(--gray-300);
+  transition: 0.2s;
+}
