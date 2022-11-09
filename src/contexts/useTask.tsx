@@ -4,8 +4,9 @@ import {
   useContext,
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export type Task = {
   content: string;
@@ -13,10 +14,10 @@ export type Task = {
   id: string;
 };
 interface TaskContentData {
-  task: Task[];
-  createdTask: ({ content, done }: Task) => void;
-  deletedTask: (taskId: string) => void;
-  completedTask: (taskId: string) => void;
+  tasks: Task[];
+  createNewTask: (content: string) => void;
+  deleteTask: (taskId: string) => void;
+  updateTaskDone: (taskId: string) => void;
 }
 
 export const TaskContext = createContext<TaskContentData>(
@@ -27,7 +28,7 @@ interface TaskProviderProps {
   children: ReactNode;
 }
 
-export function TaskContextProvider({ children }: TaskProviderProps) {
+export function TaskProvider({ children }: TaskProviderProps) {
   const [tasks, setTasks] = useState<Task[]>(() => {
     const storageTasks = localStorage.getItem("@todolist:tasks");
 
@@ -43,38 +44,83 @@ export function TaskContextProvider({ children }: TaskProviderProps) {
     prevTaskRef.current = tasks;
   });
 
-
   const taskPreviousValue = prevTaskRef.current ?? tasks;
 
-  useEffect(()=>{
-    if(taskPreviousValue !== tasks){
-      localStorage.setItem('@todolist:tasks', JSON.stringify(tasks))
+  useEffect(() => {
+    if (taskPreviousValue !== tasks) {
+      localStorage.setItem("@todolist:tasks", JSON.stringify(tasks));
     }
-  }, [tasks, taskPreviousValue])
+  }, [tasks, taskPreviousValue]);
 
-  const CreateNewTask = ({content,done}:Task) => {
+  const createNewTask = (content: string) => {
     try {
       const updatedTask = [...tasks];
-      const tasksCompleted = updatedTask.find(task => task.done === true)
-    
-      
+      // const tasksCompleted = updatedTask.find(task => task.done === true)
 
-        const newProduct = {
-          ...updatedTask,
-          content,
-          done: false,
-          id: 
-        }
-        updatedCart.push(newProduct)
+      const newTask = {
+        // ...updatedTask,
+        content,
+        done: false,
+        id: uuidv4(),
+      };
+      updatedTask.push(newTask);
 
-      }
-      setCart(updatedCart)
+      setTasks(updatedTask);
     } catch {
-      toast.error('Erro na adição do produto')
+      alert("Erro ao criar nova task!");
     }
   };
 
-  return <TaskContext.Provider value={tasks}>{children}</TaskContext.Provider>;
+  const deleteTask = (taskId: string) => {
+    try {
+      const updatedTask = [...tasks];
+      const taskIndex = updatedTask.findIndex((task) => task.id === taskId);
+      if (taskIndex >= 0) {
+        updatedTask.splice(taskIndex, 1);
+        setTasks(updatedTask);
+      } else {
+        throw Error();
+      }
+    } catch {
+      alert("Erro na remoção da task");
+    }
+  };
+  const updateTaskDone = (taskId: string) => {
+    try {
+      const updatedTasks = [...tasks];
+
+      const incompleteTask = updatedTasks.find((task) => task.id === taskId);
+      const taskIndex = updatedTasks.findIndex((task) => task.id === taskId);
+
+      if (incompleteTask?.done === true) {
+        alert("Task já está concluída!");
+        return;
+      }
+      if (taskIndex >= 0) {
+        updatedTasks.splice(taskIndex, 1);
+      }
+      const updatedTask = {
+        // ...updatedTask,
+        content: incompleteTask?.content!,
+        done: true,
+        id: incompleteTask?.id!,
+      };
+
+      updatedTasks.push(updatedTask);
+
+      setTasks(updatedTasks);
+    } catch {
+      alert("Erro ao concluir tarefa!");
+    }
+  };
+
+  return (
+    <TaskContext.Provider
+      value={{ tasks, createNewTask, deleteTask, updateTaskDone }}
+    >
+      {children}
+    </TaskContext.Provider>
+  );
 }
 
 export const useTask = () => useContext(TaskContext);
