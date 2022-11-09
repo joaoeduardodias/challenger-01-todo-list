@@ -1,13 +1,22 @@
 import { CheckCircle, Circle, Trash } from "phosphor-react";
 import { useState } from "react";
+import { useTask } from "../../contexts/useTask";
 import styles from "./Task.module.css";
 
-export function Task(): JSX.Element {
+interface TaskProps {
+  content: string;
+  done: boolean;
+  id: string;
+}
+
+export function Task({ content, done, id }: TaskProps): JSX.Element {
   const [isMouseHovered, setIsMouseHovered] = useState<boolean>(false);
-  const [isTaskDone, setIsTaskDone] = useState<boolean>(false);
+  const [isTaskDone, setIsTaskDone] = useState<boolean>(done);
+  const { updateTaskDone } = useTask();
 
   function handleCompletedTask(): void {
     setIsTaskDone(true);
+    updateTaskDone(id);
   }
 
   return (
@@ -24,10 +33,7 @@ export function Task(): JSX.Element {
       ) : (
         <CheckCircle size={24} className={styles.checked} weight="fill" />
       )}
-      <p>
-        Integer urna interdum massa libero auctors neque trupis trupis semper.
-        Dius vel sed fames integer.
-      </p>
+      <p>{content}</p>
       <button className={styles.trashButton} title="Deletar Tarefa">
         <Trash size={16} />
       </button>

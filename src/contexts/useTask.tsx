@@ -55,10 +55,8 @@ export function TaskProvider({ children }: TaskProviderProps) {
   const createNewTask = (content: string) => {
     try {
       const updatedTask = [...tasks];
-      // const tasksCompleted = updatedTask.find(task => task.done === true)
 
       const newTask = {
-        // ...updatedTask,
         content,
         done: false,
         id: uuidv4(),
@@ -87,28 +85,34 @@ export function TaskProvider({ children }: TaskProviderProps) {
   };
   const updateTaskDone = (taskId: string) => {
     try {
-      const updatedTasks = [...tasks];
+      const updateTask = tasks.map((task) => {
+        const taskDone = task.id === taskId;
 
-      const incompleteTask = updatedTasks.find((task) => task.id === taskId);
-      const taskIndex = updatedTasks.findIndex((task) => task.id === taskId);
+        return taskDone;
+      });
 
-      if (incompleteTask?.done === true) {
-        alert("Task já está concluída!");
-        return;
-      }
-      if (taskIndex >= 0) {
-        updatedTasks.splice(taskIndex, 1);
-      }
-      const updatedTask = {
-        // ...updatedTask,
-        content: incompleteTask?.content!,
-        done: true,
-        id: incompleteTask?.id!,
-      };
+      console.log(updateTask);
 
-      updatedTasks.push(updatedTask);
+      // const incompleteTask = updatedTasks.find((task) => task.id === taskId);
+      // const taskIndex = updatedTasks.findIndex((task) => task.id === taskId);
 
-      setTasks(updatedTasks);
+      // if (incompleteTask?.done === true) {
+      //   alert("Task já está concluída!");
+      //   return;
+      // }
+      // if (taskIndex >= 0) {
+      //   updatedTasks.splice(taskIndex, 1);
+      // }
+      // const updatedTask = {
+      //   // ...updatedTask,
+      //   content: incompleteTask?.content!,
+      //   done: true,
+      //   id: incompleteTask?.id!,
+      // };
+
+      // updatedTasks.push(updatedTask);
+
+      // setTasks(updatedTasks);
     } catch {
       alert("Erro ao concluir tarefa!");
     }
