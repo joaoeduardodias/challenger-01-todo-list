@@ -4,16 +4,17 @@ import { Task } from "../Task";
 import styles from "./ListTasks.module.css";
 
 export function ListTasks(): JSX.Element {
-  const { tasks } = useTask();
+  const { tasks, counterTasksDone } = useTask();
+  const tasksDone = counterTasksDone();
 
   return (
     <main className={styles.container}>
       <header>
         <strong>
-          Tarefas criadas <div className={styles.counter}>0</div>
+          Tarefas criadas <div className={styles.counter}>{tasks.length}</div>
         </strong>
         <strong>
-          Concluídas <div className={styles.counter}>0</div>
+          Concluídas <div className={styles.counter}>{tasksDone}</div>
         </strong>
       </header>
       <ul className={styles.list}>

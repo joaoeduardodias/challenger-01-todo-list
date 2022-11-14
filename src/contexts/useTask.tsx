@@ -18,6 +18,7 @@ interface TaskContentData {
   createNewTask: (content: string) => void;
   deleteTask: (taskId: string) => void;
   updateTaskDone: (taskId: string) => void;
+  counterTasksDone: () => number;
 }
 
 export const TaskContext = createContext<TaskContentData>(
@@ -86,41 +87,37 @@ export function TaskProvider({ children }: TaskProviderProps) {
   const updateTaskDone = (taskId: string) => {
     try {
       const updateTask = tasks.map((task) => {
-        const taskDone = task.id === taskId;
+        if (task.id === taskId) {
+          task.done = true;
+        }
 
-        return taskDone;
+        return task;
       });
 
-      console.log(updateTask);
-
-      // const incompleteTask = updatedTasks.find((task) => task.id === taskId);
-      // const taskIndex = updatedTasks.findIndex((task) => task.id === taskId);
-
-      // if (incompleteTask?.done === true) {
-      //   alert("Task já está concluída!");
-      //   return;
-      // }
-      // if (taskIndex >= 0) {
-      //   updatedTasks.splice(taskIndex, 1);
-      // }
-      // const updatedTask = {
-      //   // ...updatedTask,
-      //   content: incompleteTask?.content!,
-      //   done: true,
-      //   id: incompleteTask?.id!,
-      // };
-
-      // updatedTasks.push(updatedTask);
-
-      // setTasks(updatedTasks);
+      setTasks(updateTask);
     } catch {
       alert("Erro ao concluir tarefa!");
     }
   };
+  const counterTasksDone = () => {
+    const TasksDone = tasks.reduce((acc, task) => {
+      if (task.done === true) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+    return TasksDone;
+  };
 
   return (
     <TaskContext.Provider
-      value={{ tasks, createNewTask, deleteTask, updateTaskDone }}
+      value={{
+        tasks,
+        createNewTask,
+        deleteTask,
+        updateTaskDone,
+        counterTasksDone,
+      }}
     >
       {children}
     </TaskContext.Provider>

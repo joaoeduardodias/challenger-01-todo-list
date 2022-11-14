@@ -12,11 +12,15 @@ interface TaskProps {
 export function Task({ content, done, id }: TaskProps): JSX.Element {
   const [isMouseHovered, setIsMouseHovered] = useState<boolean>(false);
   const [isTaskDone, setIsTaskDone] = useState<boolean>(done);
-  const { updateTaskDone } = useTask();
+  const { updateTaskDone, deleteTask } = useTask();
 
   function handleCompletedTask(): void {
     setIsTaskDone(true);
     updateTaskDone(id);
+  }
+
+  function handleDeleteTask(): void {
+    deleteTask(id);
   }
 
   return (
@@ -34,7 +38,11 @@ export function Task({ content, done, id }: TaskProps): JSX.Element {
         <CheckCircle size={24} className={styles.checked} weight="fill" />
       )}
       <p>{content}</p>
-      <button className={styles.trashButton} title="Deletar Tarefa">
+      <button
+        className={styles.trashButton}
+        title="Deletar Tarefa"
+        onClick={handleDeleteTask}
+      >
         <Trash size={16} />
       </button>
     </li>
